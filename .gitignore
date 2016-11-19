@@ -1,3 +1,6 @@
+# App specific
+db.txt
+
 # Mac specific
 .DS_Store
 
