@@ -7,7 +7,7 @@ To start the app
 node server.js
 ```
 
-Open it the app at `http://localhost/stem`, which allows you to vote :)
+Open the app at `http://localhost/stem`, which allows you to vote.
 
 Adding names can be down as follows, type:
 ```
