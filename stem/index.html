@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+
+
+</head>
+
+<body>
+
+
+
+<script type="text/javascript">
+	
+	var HTML_FILE_URL = 'db.txt';
+
+	$(document).ready(function() {
+	
+		var spelers = [];
+		var playerNames = [];
+		var totalVotes = 0;
+		var currentButton = null;
+
+	    $.get(HTML_FILE_URL, function(data) {
+	        var lines = data.split('\n')
+	        var lastElement = lines.length-1
+
+	        //verwijder laatste element als deze leeg is
+	        if(lines[lastElement] == ""){
+	        	lines.splice(lastElement, 1);
+	        }
+
+	        $.each(lines, function(n, elem) {
+       			$('#head').append('<button id="' + n +'" class="btn btn-primary btn-lg btn-block player">' + elem +  '</button>');
+       			playerNames.push(elem);
+       			spelers.push(0);
+    		});
+
+	        //dit stuk code moet in de get zitten
+	    	$('.player').click(function(ev){
+	    		currentButton = ev.target;
+	   			console.log("clicked " + ev.target.id + " array: " + spelers);
+				$('#playerModal').modal('show');
+				$('#playerName').text(ev.target.innerText);
+			});
+
+			$('.no').click(function(ev){
+				console.log("clicked on no... array: " + spelers);
+			});
+
+			$('.yes').click(function(ev){
+				var val = spelers[currentButton.id];
+	    		val = val+1;
+	    		spelers[currentButton.id] = val;
+	    		totalVotes = totalVotes + 1;
+	    		$('#confirmation').html('<div id="confirmation"><h4>... Er zijn nu '+ totalVotes +' stemmen.</h4></div>');
+			});
+
+			$('#resultatenKnop').click(function(ev){
+				var playerDict = [];
+				$('#results').html('<h4>de resultaten zijn: </h4>');
+				for(i=0;i<spelers.length;i++){
+					var naam = playerNames[i];
+					var stem = spelers[i];
+					playerDict.push({name: naam, val: stem});
+				}
+
+				playerDict.sort(function(a,b) {
+    				return b.val - a.val;
+				});
+
+				
+
+				for(i=0;i<spelers.length;i++){
+					$('#results').append(playerDict[i].name+ ": " + playerDict[i].val + "<br />");
+				}
+				
+				console.log(playerDict);
+				$('#results').append('</div>');
+			});
+	    });
+
+
+
+
+
+	});
+
+
+
+</script>
+
+
+
+<div class="well" style="max-width: 200px; margin: 20px 20px 10px;">
+	<div id="head">
+		<h4>Kies een speler</h4>
+	</div>
+</div>
+
+<div id="confirmation" style="margin: 20px 20px 10px;">... wachtend op een klik ...</div>
+
+<button id="resultatenKnop" class="btn btn-primary" style="margin: 20px 20px 10px;">Bekijk de resultaten</button>
+
+<div id="results" style="margin: 20px 20px 10px;">Hier komen de resultaten</div>
+
+<div id="playerModal" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false" >
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    	<div class="modal-header">
+    		<h4 class="modal-title" id="mySmallModalLabel">Small modal</h4>
+    	</div>
+    	<div class="modal-body">
+    		Weet je zeker dat je <span id="playerName">...</span> een stem wilt geven?
+    	</div>
+    	<div class="modal-footer">
+    		<button type="button" class="btn btn-primary yes" data-dismiss="modal">Ja</button>
+	        <button type="button" class="btn btn-default no" data-dismiss="modal">Nee</button>
+      	</div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
